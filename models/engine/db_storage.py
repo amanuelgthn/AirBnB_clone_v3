@@ -41,15 +41,20 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """query on the current database session"""
-        new_dict = {}
-        for clss in classes:
-            if cls is None or cls is classes[clss] or cls is clss:
-                objs = self.__session.query(classes[clss]).all()
-                for obj in objs:
-                    key = obj.__class__.__name__ + '.' + obj.id
-                    new_dict[key] = obj
-        return (new_dict)
+        """converts query to a dict of objects"""
+        objs = {}
+        if not self.__session:
+            self.reload()
+        if type(cls) is str:
+            cls = classes.get(cls, None)
+        if cls:
+            for objct in self.__session.query(cls):
+                objs[objct.__class__.__name__ + '.' + objct.id] = objct
+        else:
+            for cls in classes.values():
+                for objct in self.__session.query(cls):
+                    objs[objct.__class__.__name__ + '.' + objct.id] = objct
+        return objs
 
     def new(self, obj):
         """add the object to the current database session"""
@@ -73,14 +78,25 @@ class DBStorage:
     
     def get(self, cls, id):
         "method to retrieve one object"
-        class_id = "{}.{}".format(cls, id)
-        return self.all(cls).get(class_id)
+        if cls is not None and type(cls) is str and cls in classes.values() and id is not None and type(id) is str:
+            cls = classes.get(cls)
+            obj = self.__session.query(cls).filter(cls.id == id).first()
+            return obj
+        else:
+            return None
 
     def count(self, cls=None):
         "method to count the number of objects in storage"
         if cls not in classes:
             return None
-        return (len(self.all(cls)))
+        count = 0
+        if type(cls) == str and cls in classes:
+            cls = classes[cls]
+            count = self.__session.query(cls).count()
+        elif cls is None:
+            for cls in classes.values():
+                count += self.__session.query(cls).count()
+        return count
 
     def close(self):
         """call remove() method on the private session attribute"""
