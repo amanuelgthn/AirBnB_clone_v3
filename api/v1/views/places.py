@@ -103,16 +103,12 @@ def places_search():
     if amenities and len(amenities) > 0:
         amenities = set([
             a_id for a_id in amenities if storage.get('Amenity', a_id)])
+        if STORAGE_TYPE == 'db':
+            amenities = [storage.get('Amenity', a_id) for a_id in amenities]
         for p in all_places:
-            p_amenities = None
-            if STORAGE_TYPE == 'db' and p.amenities:
-                p_amenities = [a.id for a in p.amenities]
-            elif len(p.amenities) > 0:
-                p_amenities = p.amenities
-            if p_amenities and all([a in p_amenities for a in amenities]):
+            if p.amenities and all([a in p.amenities for a in amenities]):
                 places_amenities.append(p)
     else:
         places_amenities = all_places
     result = [place.to_json() for place in places_amenities]
     return jsonify(result)
-
