@@ -86,4 +86,3 @@ def place_put(place_id):
     place.save()
     place = place.to_json()
     return jsonify(place), 200
-    
