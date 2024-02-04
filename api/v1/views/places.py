@@ -12,7 +12,6 @@ from api.v1.views import app_views
 
 @app_views.route('/cities/<city_id>/places',
                  methods=['GET'], strict_slashes=False)
-@swag_from('documentation/cities/get.yml', methods=['GET'])
 def get_all(city_id):
     """ return all the place objects withing a given city"""
     city = storage.get("City", city_id)
@@ -24,7 +23,6 @@ def get_all(city_id):
 
 @app_views.route('/places/<string:place_id>', methods=['GET'],
                  strict_slashes=False)
-@swag_from('documentation/place/get.yml', methods=['GET'])
 def get_method_place(place_id):
     """ Returns a place by place_id"""
     place = storage.get(Place, place_id)
@@ -35,8 +33,6 @@ def get_method_place(place_id):
 
 @app_views.route('/places/<string:place_id>', methods=['DELETE'],
                  strict_slashes=False)
-@swag_from('documentation/place/delete.yml', methods=['DELETE'],
-           strict_slashes=False)
 def del_method(place_id):
     """ delete place by id"""
     place = storage.get(Place, place_id)
@@ -49,7 +45,6 @@ def del_method(place_id):
 
 @app_views.route('/cities/<city_id>/places', methods=['POST'],
                  strict_slashes=False)
-@swag_from('documentation/place/create.yml', methods=['POST'])
 def create_ob(city_id):
     """create a new place instance"""
     city = storage.get("City", city_id)
@@ -76,7 +71,6 @@ def create_ob(city_id):
 
 @app_views.route('/places/<string:place_id>',
                  methods=['PUT'], strict_slashes=False)
-@swag_from('documentation/place/put.yml', methods=['PUT'])
 def put(place_id):
     """Update an existing place"""
     if not request.get_json():
