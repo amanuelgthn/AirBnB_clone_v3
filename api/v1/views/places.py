@@ -7,7 +7,6 @@ from models.place import Place
 from flasgger.utils import swag_from
 
 
-
 @app_views.route('/places', methods=['GET'], strict_slashes=False)
 @swag_from('documentation/place/get.yml', methods=['GET'])
 def get_all():
@@ -15,7 +14,9 @@ def get_all():
     all_list = [obj.to_dict() for obj in storage.all(Place).values()]
     return jsonify(all_list)
 
-@app_views.route('/places/<string:place_id>', methods=['GET'], strict_slashes=False)
+
+@app_views.route('/places/<string:place_id>', methods=['GET'],
+                 strict_slashes=False)
 @swag_from('documentation/place/get.yml', methods=['GET'])
 def get_method_place(place_id):
     """ get places by id"""
@@ -24,8 +25,11 @@ def get_method_place(place_id):
         abort(404)
     return jsonify(place.to_dict())
 
-@app_views.route('/places/<string:place_id>', methods=['DELETE'], strict_slashes=False)
-@swag_from('documentation/place/delete.yml', methods=['DELETE'], strict_slashes=False)
+
+@app_views.route('/places/<string:place_id>', methods=['DELETE'],
+                 strict_slashes=False)
+@swag_from('documentation/place/delete.yml', methods=['DELETE'],
+           strict_slashes=False)
 def del_method(place_id):
     """ delete place by id"""
     place = storage.get(Place, place_id)
@@ -35,7 +39,9 @@ def del_method(place_id):
     storage.save()
     return jsonify({})
 
-@app_views.route('/places/', methods=['POST'], strict_slashes=False)
+
+@app_views.route('/places/', methods=['POST'],
+                 strict_slashes=False)
 @swag_from('documentation/place/create.yml', methods=['POST'])
 def create_ob():
     """create a new place instance"""
@@ -48,7 +54,9 @@ def create_ob():
     obj.save()
     return jsonify(obj.to_dict()), 201
 
-@app_views.route('/places/<string:place_id>', methods=['PUT'], strict_slashes=False)
+
+@app_views.route('/places/<string:place_id>',
+                 methods=['PUT'], strict_slashes=False)
 @swag_from('documentation/place/put.yml', methods=['PUT'])
 def put(place_id):
     """Update an existing place"""
