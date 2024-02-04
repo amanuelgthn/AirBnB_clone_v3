@@ -2,8 +2,6 @@
 """
 Place blueprint
 """
-
-
 from api.v1.views import app_views
 from flask import jsonify, abort, request, make_response
 from models import storage
@@ -24,7 +22,7 @@ def get_all():
 @swag_from('documentation/place/get.yml', methods=['GET'])
 def get_method_place(place_id):
     """ get places by id"""
-    place = storage.get_place(Place, place_id)
+    place = storage.get(Place, place_id)
     if place is None:
         abort(404)
     return jsonify(place.to_dict())
